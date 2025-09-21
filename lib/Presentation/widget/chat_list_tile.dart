@@ -1,4 +1,6 @@
 import 'package:chatter_chatapp/Data/models/chat_room_model.dart';
+import 'package:chatter_chatapp/Data/reposetory/chat_repository.dart';
+import 'package:chatter_chatapp/Data/sevicies/service_locator.dart';
 import 'package:flutter/material.dart';
 
 class ChatListTile extends StatelessWidget {
@@ -62,17 +64,31 @@ class ChatListTile extends StatelessWidget {
         ],
       ),
       
-      trailing: Container(
-        padding: const EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Text("*"
-          // chat.unreadCount.toString(),
-          // style: const TextStyle(color: Colors.white),
-        ),
-      ),
+      trailing: StreamBuilder<int>(
+        stream: getIt<ChatRepository>().getUnreadMessageCount(
+          chat.id, currentUserId),
+           builder: (context, snapshot){
+            if (!snapshot.hasData || snapshot.data == 0){
+              return const SizedBox();
+
+            }
+            return Container(
+              padding: const EdgeInsets.all(8),
+              decoration:  BoxDecoration(
+                color: Colors.blue.shade400,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                snapshot.data.toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            );
+           }),
+           
       
     );
   }

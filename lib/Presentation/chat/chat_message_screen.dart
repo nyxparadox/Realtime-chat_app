@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessageScreen extends StatefulWidget {
   final String receiverId;
@@ -50,7 +51,8 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
 
   @override
   void dispose() {
-    messageController.dispose(); // Dispose the controller to free resources
+    messageController.dispose(); // Dispose the controller to free resources 
+    _chatCubit.leaveChat();
     super.dispose();
   }
 
@@ -221,16 +223,20 @@ class MessageBubble extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text("1:40 AM", 
-                style: TextStyle(
-                  color: isMe ? Colors.white70 : Colors.black54,
-                  fontSize: 9,
-                ),
+              Text(
+                DateFormat("h:mm:a").format(message.timestamp.toDate()),
+                style: TextStyle(color: isMe ? Colors.white70 : Colors.black54, fontSize: 12),  
               ),
+              if (isMe) ...[
+                SizedBox(width: 5),
+                Icon(
+                  message.readBy.length > 1 ? Icons.done_all : Icons.done,
+                  size: 16,
+                  color: message.readBy.length > 1 ? Colors.blueAccent : (isMe ? Colors.white70 : Colors.black54),
+                ),
+              ],
               
-              if (isMe == true)
-              Icon(Icons.check,
-              size: 15,)
+              
             ],
           ),
 

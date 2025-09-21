@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ChatCubit extends Cubit<ChatState>{
   final ChatRepository _chatRepository;
   final String currentUserId;
+  bool isInchat = false;
 
   StreamSubscription? _messageSubscription;
 
@@ -18,6 +19,7 @@ class ChatCubit extends Cubit<ChatState>{
 
 
   void enterChat(String receiverId) async {
+    isInchat = true;
     emit(state.copyWith(status: ChatStatus.loading));
 
     try {
@@ -66,6 +68,9 @@ class ChatCubit extends Cubit<ChatState>{
 
     _messageSubscription = _chatRepository.getMessages(chatRoomId)
       .listen((messages) {
+        if (isInchat){
+          _markMessagesAsRead(chatRoomId);
+        }
         emit(
           state.copyWith(
             messages: messages,
@@ -76,5 +81,22 @@ class ChatCubit extends Cubit<ChatState>{
           error: "Failed to load messages: $error",
         ));
       });
+  }
+
+  Future<void> _markMessagesAsRead (String chatRoomId) async {
+    if (state.chatRoomId == null) return;
+
+    try {
+      await _chatRepository.markMessagesAsRead(chatRoomId,currentUserId);
+    } catch (e) {
+      emit(state.copyWith(
+        status: ChatStatus.error,
+        error: "Failed to mark messages as read: $e",
+      ));
+    }
+  }
+
+  Future<void> leaveChat() async {
+    isInchat = false;
   }
 }
