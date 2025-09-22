@@ -88,85 +88,93 @@ class _ChatMessageScreenState extends State<ChatMessageScreen> {
 
 
       ),
-
-      body: Padding(
-        padding: const EdgeInsets.only(top: 13),
-        child: BlocBuilder<ChatCubit, ChatState>(
-          bloc: _chatCubit,
-          builder: (context, state) {
-            if (state.status == ChatStatus.loading) {
-              return Center(child: CircularProgressIndicator(color: Colors.cyanAccent,));
-            } else if (state.status == ChatStatus.error) {
-              return Center(child: Text("Error: ${state.error}", style: TextStyle(color: Colors.red),));
-            } /*else if (state.messages.isEmpty) {
-              return Center(child: Text("No messages yet", style: TextStyle(color: Colors.blueGrey),));
-            }*/
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder( 
-                    reverse: true,
-                    itemCount: state.messages.length,
-                    itemBuilder: (context, index){
-                      final message = state.messages[index];
-                      final isMe = message.senderId == _chatCubit.currentUserId;
-
-                  return MessageBubble(
-                    message: message,
-                    isMe: isMe
-                    );
-                  }),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/homeBg04.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 13),
+          child: BlocBuilder<ChatCubit, ChatState>(
+            bloc: _chatCubit,
+            builder: (context, state) {
+              if (state.status == ChatStatus.loading) {
+                return Center(child: CircularProgressIndicator(color: Colors.cyanAccent,));
+              } else if (state.status == ChatStatus.error) {
+                return Center(child: Text("Error: ${state.error}", style: TextStyle(color: Colors.red),));
+              } /*else if (state.messages.isEmpty) {
+                return Center(child: Text("No messages yet", style: TextStyle(color: Colors.blueGrey),));
+              }*/
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView.builder( 
+                      reverse: true,
+                      itemCount: state.messages.length,
+                      itemBuilder: (context, index){
+                        final message = state.messages[index];
+                        final isMe = message.senderId == _chatCubit.currentUserId;
+        
+                    return MessageBubble(
+                      message: message,
+                      isMe: isMe
+                      );
+                    }),
+                    
+                  ),
+              
+              
                   
-                ),
-            
-            
-                
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: messageController,
-                          decoration: InputDecoration(
-                            hintText: "Type a message",
-                            hintStyle: TextStyle(color: Colors.blueGrey, fontSize: 16),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30), 
-                            ),
-                            fillColor: Colors.black54,
-            
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: IconButton(
-                                onPressed: (){},
-                                 icon: Icon(Icons.emoji_emotions_outlined),
-                                  color: Colors.cyanAccent,
-                                  iconSize: 30,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: messageController,
+                            decoration: InputDecoration(
+                              hintText: "Type a message",
+                              hintStyle: TextStyle(color: Colors.blueGrey, fontSize: 16),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30), 
                               ),
-                            ),
-            
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: IconButton(
-                                onPressed: handelSendMessage,
-                                icon: Icon(Icons.send, color: Colors.cyanAccent, size: 29,),
+                              fillColor: Colors.black54,
+              
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: IconButton(
+                                  onPressed: (){},
+                                   icon: Icon(Icons.emoji_emotions_outlined),
+                                    color: Colors.cyanAccent,
+                                    iconSize: 30,
+                                ),
                               ),
+              
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: IconButton(
+                                  onPressed: handelSendMessage,
+                                  icon: Icon(Icons.send, color: Colors.cyanAccent, size: 29,),
+                                ),
+                              ),
+                              
                             ),
-                            
                           ),
                         ),
-                      ),
-                      
-                    ],
+                        
+                      ],
+                    ),
                   ),
-                ),
-                
-                
-                
-                ],
-            );
-          }
+                  
+                  
+                  
+                  ],
+              );
+            }
+          ),
         ),
       ),
     );

@@ -46,12 +46,12 @@ class ChatListTile extends StatelessWidget {
       onTap: onTap,
       leading: CircleAvatar(
         backgroundColor: Colors.blueGrey,
-        child: Text(_getOtherUsername()[0].toUpperCase()),
+        child: Text(_getOtherUsername()[0].toUpperCase(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
       ),
 
 
 
-      title: Text(_getOtherUsername()),
+      title: Text(_getOtherUsername(), style: TextStyle(color: Colors.white),),
       subtitle: Row(
         children: [
           Expanded(

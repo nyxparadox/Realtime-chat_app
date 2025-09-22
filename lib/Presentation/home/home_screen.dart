@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(contact['name'].isNotEmpty ? contact['name'][0].toUpperCase() : '?',),   //---- this line is changed
                           ),
 
-                          title: Text(contact["name"] ),
+                          title: Text(contact["name"], style: TextStyle(color: Colors.white),),
                           onTap: () {
                             getIt<AppRouter>().push(
                               ChatMessageScreen(
@@ -117,48 +117,56 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         title: Text('Chats', style: TextStyle(color: Colors.white)),
       ),
-
-      body: StreamBuilder(
-        stream: _chatRepository.getChatRooms(_currentUserId),
-         builder: (context, snapshot){
-          if (snapshot.hasError) {
-            print(snapshot.error);
-            return Center(child: Text("Error: ${snapshot.error}"));
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator(color: Colors.white));
-          }
-
-          final chats = snapshot.data!;
-          if (chats.isEmpty) {
-            return const Center(child: Text("No chats available"));
-            
-          }
-
-          return ListView.builder(
-            itemCount: chats.length,
-            itemBuilder: (context, index) {
-              final chat = chats[index];
-              return ChatListTile(
-                chat: chat,
-                currentUserId: _currentUserId,
-                onTap: () {
-                  final otherUserId = chat.participants.firstWhere(
-                    (id) => id != _currentUserId,);
-                  final otherUserName = chat.participantsName![otherUserId] ?? "Unkonwn user";
-                  getIt<AppRouter>().push(
-                    ChatMessageScreen(
-                      receiverId: otherUserId,
-                      receiverName: otherUserName,
-                    ),
-                  );
-                },
-              );
-            },
-          );
-
-      }),
+      extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/homeBg05.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: StreamBuilder(
+          stream: _chatRepository.getChatRooms(_currentUserId),
+           builder: (context, snapshot){
+            if (snapshot.hasError) {
+              print(snapshot.error);
+              return Center(child: Text("Error: ${snapshot.error}"));
+            }
+        
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator(color: Colors.white));
+            }
+        
+            final chats = snapshot.data!;
+            if (chats.isEmpty) {
+              return const Center(child: Text("No chats available"));
+              
+            }
+        
+            return ListView.builder(
+              itemCount: chats.length,
+              itemBuilder: (context, index) {
+                final chat = chats[index];
+                return ChatListTile(
+                  chat: chat,
+                  currentUserId: _currentUserId,
+                  onTap: () {
+                    final otherUserId = chat.participants.firstWhere(
+                      (id) => id != _currentUserId,);
+                    final otherUserName = chat.participantsName![otherUserId] ?? "Unkonwn user";
+                    getIt<AppRouter>().push(
+                      ChatMessageScreen(
+                        receiverId: otherUserId,
+                        receiverName: otherUserName,
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+        
+        }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showContactList(context),
         backgroundColor: Color(0xFF004F4F),
